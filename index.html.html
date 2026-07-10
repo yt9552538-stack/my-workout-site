@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BODY CRAFT | 1年計画 ＆ ワークアウトカスタマイザー</title>
+    <style>
+        /* ベーススタイル */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        /* ヘッダー */
+        header {
+            border-bottom: 2px solid #000000;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 26px;
+            letter-spacing: 6px;
+            font-weight: 900;
+        }
+
+        header p {
+            font-size: 11px;
+            color: #666666;
+            margin-top: 5px;
+            letter-spacing: 2px;
+        }
+
+        /* コンテナ */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            border-left: 6px solid #000000;
+            padding-left: 12px;
+            margin: 40px 0 20px 0;
+            letter-spacing: 2px;
+            font-weight: 800;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-subtitle {
+            font-size: 12px;
+            color: #666666;
+            font-weight: normal;
+        }
+
+        /* 1年計画セクション (Yearly Plan) */
+        .yearly-box {
+            border: 2px solid #000000;
+            padding: 25px;
+            background-color: #ffffff;
+            margin-bottom: 30px;
+        }
+
+        .yearly-box h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .goal-input-area {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .goal-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #000000;
+            font-size: 15px;
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        /* 1年間のマイルストーン（チェックリスト） */
+        .milestone-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .milestone-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+
+        .milestone-item.completed {
+            border-color: #000000;
+            background-color: #f0f0f0;
+            text-decoration: line-through;
+            color: #888888;
+        }
+
+        .milestone-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #000000;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: #000000;
+        }
+
+        .milestone-text {
+            font-size: 14px;
+            font-weight: bold;
+            flex-grow: 1;
+        }
+
+        /* お祝い演出オーバーレイ */
+        .congrats-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            color: #ffffff;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .congrats-content h2 {
+            font-size: 40px;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+        }
+
+        .congrats-content p {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #cccccc;
+        }
+
+        .close-congrats-btn {
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* 曜日別・セット調整カスタマイザー */
+        .customizer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .day-box {
+            border: 2px solid #000000;
+            padding: 20px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .day-header {
+            font-size: 18px;
+            font-weight: 900;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .day-status {
+            font-size: 11px;
+            background-color: #000000;
+            color: #ffffff;
+            padding: 2px 8px;
+            letter-spacing: 1px;
+        }
+
+        /* メニューリスト */
+        .menu-list {
+            list-style: none;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .menu-info {
+            flex-grow: 1;
+        }
+
+        .menu-name {
+            font-size: 14px;
+            font-weight: bold;
+            display: block;
+        }
+
+        .menu-details {
+            font-size: 11px;
+            color: #666666;
+        }
+
+        /* セット数コントロール */
+        .set-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .set-btn {
+            width: 26px;
+            height: 26px;
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            color: #000000;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .set-btn:hover {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .set-count {
+            font-size: 14px;
+            font-weight: bold;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .delete-menu-btn {
+            background: none;
+            border: none;
+            color: #ff0000;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 5px;
+            padding: 5px;
+        }
+
+        /* メニュー追加フォーム */
+        .add-menu-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 5px;
+        }
+
+        .form-input {
+            padding: 6px;
+            border: 1px solid #000000;
+            font-size: 12px;
+        }
+
+        .input-name {
+            flex-grow: 1;
+        }
+
+        .input-num {
+            width: 70px;
+        }
+
+        .add-btn {
+            background-color: #000000;
+            color: #ffffff;
+            border: none;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .add-btn:hover {
+            background-color: #333333;
+        }
+
+        /* リセットボタンエリア */
+        .footer-action {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .reset-btn {
+            background-color: #ffffff;
+            color: #ff0000;
+            border: 1px solid #ff0000;
+            padding: 10px 20px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover {
+            background-color: #ff0000;
+            color: #ffffff;
+        }
+
+        /* フッター */
+        footer {
+            background-color: #000000;
+            color: #ffffff;
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ヘッダー -->
+    <header>
+        <h1>BODY CRAFT</h1>
+        <p>1-YEAR PLANNER & WORKOUT CUSTOMIZER</p>
+    </header>
+
+    <!-- メインコンテナ -->
+    <div class="container">
+
+        <!-- 1. 年間計画 ＆ 達成ロードマップ -->
+        <h2 class="section-title">
+            1-YEAR ROADMAP / 1年間の計画
+            <span class="section-subtitle">すべての目標をクリアせよ</span>
+        </h2>
+        
+        <div class="yearly-box">
+            <h3>最終目標 (1-Year Ultimate Goal)</h3>
+            <div class="goal-input-area">
+                <input type="text" id="ultimate-goal" class="goal-input" placeholder="例: 1年後に体重-5kgを達成し、ベンチプレス100kgを上げる！" oninput="saveData()">
+            </div>
+
+            <h3>月間マイルストーン (Monthly Progress)</h3>
+            <div class="milestone-list" id="milestone-container">
+                <!-- JSでマイルストーンリストを動的に生成します -->
+            </div>
+        </div>
+
+        <!-- 2. 日々のメニューとセット数のカスタム -->
+        <h2 class="section-title">
+            ROUTINE CUSTOMIZER / 曜日のセット調整
+            <span class="section-subtitle">メニューとセット数を自分仕様に変更可能</span>
+        </h2>
+
+        <div class="customizer-grid" id="customizer-grid">
+            <!-- JSで曜日別のカードを動的に生成します -->
+        </div>
+
+        <!-- 全リセット機能 -->
+        <div class="footer-action">
+            <button class="reset-btn" onclick="resetToDefault()">全ての計画とデータを初期状態に戻す</button>
+        </div>
+
+    </div>
+
+    <!-- お祝いの演出画面（隠し要素） -->
+    <div class="congrats-overlay" id="congrats-overlay">
+        <div class="congrats-content">
+            <h2>CONGRATULATIONS!</h2>
+            <p>1年間の全ての計画とトレーニング目標を完全にクリアしました！<br>あなたの努力と継続に敬意を表します。</p>
+            <button class="close-congrats-btn" onclick="closeCongrats()">計画に戻る</button>
+        </div>
+    </div>
+
+    <!-- フッター -->
+    <footer>
+        <p>&copy; 2026 BODY CRAFT. Built for Consistency.</p>
+    </footer>
+
+    <!-- スクリプト制御 -->
+    <script>
+        // デフォルトデータ（初期表示＆リセット用）
+        const defaultMilestones = [
+            { id: 1, text: "1〜3ヶ月目: フォームの習得と週3回の習慣化", completed: false },
+            { id: 2, text: "4〜6ヶ月目: 重量またはレップ数の漸進的過負荷", completed: false },
+            { id: 3, text: "7〜9ヶ月目: 弱点部位にフォーカスしたメニュー調整", completed: false },
+            { id: 4, text: "10〜12ヶ月目: 最終目標に向けた最大筋力の測定", completed: false }
+        ];
+
+        const defaultWeeklyRoutine = {
+            "Monday": {
+                name: "MON / 月曜",
+                status: "ACTIVE",
+                menus: [
+                    { name: "ベンチプレス", weight: 60, reps: 10, sets: 3 },
+                    { name: "インクライン・ダンベルプレス", weight: 20, reps: 10, sets: 3 },
+                    { name: "ディップス", weight: "自重", reps: 12, sets: 3 }
+                ]
+            },
+            "Tuesday": {
+                name: "TUE / 火曜",
+                status: "ACTIVE",
+                menus: [
+                    { name: "デッドリフト", weight: 80, reps: 8, sets: 3 },
+                    { name: "ラットプルダウン", weight: 45, reps: 10, sets: 3 },
+                    { name: "バーベル・アームカール", weight: 25, reps: 10, sets: 3 }
+                ]
+            },
+            "Wednesday": {
+                name: "WED / 水曜",
+                status: "OFF",
+                menus: []
+            },
+            "Thursday": {
+                name: "THU / 木曜",
+                status: "ACTIVE",
+                menus: [
+                    { name: "バーベル・スクワット", weight: 70, reps: 10, sets: 3 },
+                    { name: "レッグプレス", weight: 120, reps: 12, sets: 3 },
+                    { name: "アブローラー", weight: "自重", reps: 15, sets: 3 }
+                ]
+            },
+            "Friday": {
+                name: "FRI / 金曜",
+                status: "ACTIVE",
+                menus: [
+                    { name: "ショルダープレス", weight: 15, reps: 10, sets: 3 },
+                    { name: "サイドレイズ", weight: 8, reps: 15, sets: 3 }
+                ]
+            },
+            "Saturday": {
+                name: "SAT / 土曜",
+                status: "OFF",
+                menus: []
+            },
+            "Sunday": {
+                name: "SUN / 日曜",
+                status: "OFF",
+                menus: []
+            }
+        };
+
+        // アプリケーションデータ
+        let milestones = [];
+        let weeklyRoutine = {};
+
+        // 初期化処理
+        window.onload = function() {
+            loadData();
+            renderMilestones();
+            renderWeeklyRoutine();
+        };
+
+        // データの読み込み
+        function loadData() {
+            const savedMilestones = localStorage.getItem("bodycraft_milestones");
+            const savedRoutine = localStorage.getItem("bodycraft_routine");
+            const savedGoal = localStorage.getItem("bodycraft_goal");
+
+            if (savedMilestones) {
+                milestones = JSON.parse(savedMilestones);
+            } else {
+                milestones = JSON.parse(JSON.stringify(defaultMilestones));
+            }
+
+            if (savedRoutine) {
+                weeklyRoutine = JSON.parse(savedRoutine);
+            } else {
+                weeklyRoutine = JSON.parse(JSON.stringify(defaultWeeklyRoutine));
+            }
+
+            if (savedGoal) {
+                document.getElementById("ultimate-goal").value = savedGoal;
+            }
+        }
+
+        // データの保存
+        function saveData() {
+            localStorage.setItem("bodycraft_milestones", JSON.stringify(milestones));
+            localStorage.setItem("bodycraft_routine", JSON.stringify(weeklyRoutine));
+            
+            const goalValue = document.getElementById("ultimate-goal").value;
+            localStorage.setItem("bodycraft_goal", goalValue);
+        }
+
+        // 1. マイルストーンレンダリング
+        function renderMilestones() {
+            const container = document.getElementById("milestone-container");
+            container.innerHTML = "";
+
+            milestones.forEach((item, index) => {
+                const milestoneDiv = document.createElement("div");
+                milestoneDiv.className = `milestone-item ${item.completed ? 'completed' : ''}`;
+
+                milestoneDiv.innerHTML = `
+                    <input type="checkbox" class="milestone-checkbox" ${item.completed ? 'checked' : ''} onchange="toggleMilestone(${index})">
+                    <span class="milestone-text">${item.text}</span>
+                `;
+                container.appendChild(milestoneDiv);
+            });
+        }
+
+        // マイルストーンのチェック切り替え
+        function toggleMilestone(index) {
+            milestones[index].completed = !milestones[index].completed;
+            saveData();
+            renderMilestones();
+            checkAllCompleted();
+        }
+
+        // 全て達成したかどうかのチェック
+        function checkAllCompleted() {
+            const allDone = milestones.every(item => item.completed);
+            if (allDone && milestones.length > 0) {
+                document.getElementById("congrats-overlay").style.display = "flex";
+            }
+        }
+
+        function closeCongrats() {
+            document.getElementById("congrats-overlay").style.display = "none";
+        }
+
+        // 2. 曜日別ルーティンのレンダリング
+        function renderWeeklyRoutine() {
+            const grid = document.getElementById("customizer-grid");
+            grid.innerHTML = "";
+
+            Object.keys(weeklyRoutine).forEach(dayKey => {
+                const dayData = weeklyRoutine[dayKey];
+                const dayBox = document.createElement("div");
+                dayBox.className = "day-box";
+
+                // ヘッダー作成
+                let headerHTML = `
+                    <div class="day-header">
+                        <span>${dayData.name}</span>
+                        <span class="day-status" style="background-color: ${dayData.status === 'OFF' ? '#777777' : '#000000'}">${dayData.status}</span>
+                    </div>
+                `;
+
+                // メニューリスト作成
+                let menuListHTML = `<ul class="menu-list">`;
+                if (dayData.menus.length === 0) {
+                    menuListHTML += `<li style="font-size: 13px; color: #888888; text-align: center; padding: 20px 0;">お休み（または登録なし）</li>`;
+                } else {
+                    dayData.menus.forEach((menu, menuIndex) => {
+                        menuListHTML += `
+                            <li class="menu-item">
+                                <div class="menu-info">
+                                    <span class="menu-name">${menu.name}</span>
+                                    <span class="menu-details">${menu.weight}kg × ${menu.reps}回</span>
+                                </div>
+                                <div class="set-control">
+                                    <button class="set-btn" onclick="adjustSet('${dayKey}', ${menuIndex}, -1)">-</button>
+                                    <span class="set-count">${menu.sets} セット</span>
+                                    <button class="set-btn" onclick="adjustSet('${dayKey}', ${menuIndex}, 1)">+</button>
+                                    <button class="delete-menu-btn" onclick="deleteMenu('${dayKey}', ${menuIndex})">×</button>
+                                </div>
+                            </li>
+                        `;
+                    });
+                }
+                menuListHTML += `</ul>`;
+
+                // 新規追加フォーム
+                const addFormHTML = `
+                    <div class="add-menu-form">
+                        <div class="form-row">
+                            <input type="text" id="input-name-${dayKey}" class="form-input input-name" placeholder="種目名">
+                        </div>
+                        <div class="form-row">
+                            <input type="number" id="input-weight-${dayKey}" class="form-input input-num" placeholder="重さ(kg)">
+                            <input type="number" id="input-reps-${dayKey}" class="form-input input-num" placeholder="回数">
+                            <input type="number" id="input-sets-${dayKey}" class="form-input input-num" placeholder="セット" value="3">
+                        </div>
+                        <button class="add-btn" onclick="addMenu('${dayKey}')">トレーニング種目を追加</button>
+                    </div>
+                `;
+
+                dayBox.innerHTML = headerHTML + menuListHTML + addFormHTML;
+                grid.appendChild(dayBox);
+            });
+        }
+
+        // セット数の調整ボタン
+        function adjustSet(dayKey, menuIndex, change) {
+            let currentSets = weeklyRoutine[dayKey].menus[menuIndex].sets;
+            currentSets += change;
+            if (currentSets < 1) currentSets = 1; // 最低1セット
+            
+            weeklyRoutine[dayKey].menus[menuIndex].sets = currentSets;
+            saveData();
+            renderWeeklyRoutine();
+        }
+
+        // メニューの削除
+        function deleteMenu(dayKey, menuIndex) {
+            weeklyRoutine[dayKey].menus.splice(menuIndex, 1);
+            if (weeklyRoutine[dayKey].menus.length === 0) {
+                weeklyRoutine[dayKey].status = "OFF";
+            }
+            saveData();
+            renderWeeklyRoutine();
+        }
+
+        // 新しいトレーニング種目の追加
+        function addMenu(dayKey) {
+            const nameInput = document.getElementById(`input-name-${dayKey}`);
+            const weightInput = document.getElementById(`input-weight-${dayKey}`);
+            const repsInput = document.getElementById(`input-reps-${dayKey}`);
+            const setsInput = document.getElementById(`input-sets-${dayKey}`);
+
+            const name = nameInput.value.trim();
+            const weight = parseFloat(weightInput.value) || 0;
+            const reps = parseInt(repsInput.value) || 0;
+            const sets = parseInt(setsInput.value) || 3;
+
+            if (name === "") {
+                alert("種目名を入力してください。");
+                return;
+            }
+
+            // 新規メニューを配列に追加
+            weeklyRoutine[dayKey].menus.push({
+                name: name,
+                weight: weight,
+                reps: reps,
+                sets: sets
+            });
+
+            // 1つ以上登録されたらステータスをACTIVEにする
+            weeklyRoutine[dayKey].status = "ACTIVE";
+
+            // 入力欄をクリア
+            nameInput.value = "";
+            weightInput.value = "";
+            repsInput.value = "";
+            setsInput.value = "3";
+
+            saveData();
+            renderWeeklyRoutine();
+        }
+
+        // 初期設定へリセット
+        function resetToDefault() {
+            if (confirm("本当に全てのデータを初期状態に戻しますか？（自分で入力した計画やメニューがすべて消去されます）")) {
+                localStorage.removeItem("bodycraft_milestones");
+                localStorage.removeItem("bodycraft_routine");
+                localStorage.removeItem("bodycraft_goal");
+                
+                document.getElementById("ultimate-goal").value = "";
+                
+                loadData();
+                renderMilestones();
+                renderWeeklyRoutine();
+            }
+        }
+    </script>
+</body>
+</html>
+```eof
+
+---
+
+### 追加した機能のポイント
+
+1. **1年間のロードマップ ＆ 達成クリア機能**
+   * トップ部分に「最終目標」の記入欄を用意しました。
+   * 下部にある「1年間のマイルストーン」の進捗を管理し、すべてのチェックボックスが埋まると、**画面がブラックアウトしてお祝いのメッセージが表示される特別な仕掛け**を施しています。達成時のやりがいを最大限に高めます。
+2. **トレーニングセット数のリアルタイム調整**
+   * 「+」「-」ボタンを押すことで、その日の体調やプランに合わせて簡単にセット数を上下に変更できます。
+3. **完全カスタマイズ可能な種目追加フォーム**
+   * 各曜日のボックス下部から、「種目名」「重量」「回数」を自分で入力して、オリジナルの種目を自由に追加・削除できるようになりました。
+4. **安心のオートセーブ（自動保存）**
+   * ユーザーが入力した内容や変更したセット数、チェックボックスの状態は、ブラウザを閉じても消えないようにパソコンの中に自動保存（ローカルストレージに保存）されます。
+
+このコードを先ほどの `12-2.html` に丸ごと上書き保存していただければ、すぐに計画の作成とセット調整をスタートできます！
